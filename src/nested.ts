@@ -1,12 +1,16 @@
 import { Answer } from "./interfaces/answer";
 import { Question, QuestionType } from "./interfaces/question";
+import { makeBlankQuestion } from "./objects";
 
 /**
  * Consumes an array of questions and returns a new array with only the questions
  * that are `published`.
  */
 export function getPublishedQuestions(questions: Question[]): Question[] {
-    return [];
+    let PubQs = questions.filter(
+        (question: Question): boolean => question.published,
+    );
+    return PubQs;
 }
 
 /**
@@ -15,7 +19,13 @@ export function getPublishedQuestions(questions: Question[]): Question[] {
  * `expected`, and an empty array for its `options`.
  */
 export function getNonEmptyQuestions(questions: Question[]): Question[] {
-    return [];
+    let NEQs = questions.filter(
+        (question: Question): boolean =>
+            question.body !== "" ||
+            question.expected !== "" ||
+            question.options.length !== 0,
+    );
+    return NEQs;
 }
 
 /***
@@ -24,9 +34,16 @@ export function getNonEmptyQuestions(questions: Question[]): Question[] {
  */
 export function findQuestion(
     questions: Question[],
-    id: number
+    id: number,
 ): Question | null {
-    return null;
+    let qSearchedfor = questions.find(
+        (question: Question): boolean => question.id === id,
+    );
+    if (qSearchedfor === undefined) {
+        return null;
+    } else {
+        return qSearchedfor;
+    }
 }
 
 /**
@@ -35,7 +52,10 @@ export function findQuestion(
  * Hint: use filter
  */
 export function removeQuestion(questions: Question[], id: number): Question[] {
-    return [];
+    let qIsGone = questions.filter(
+        (question: Question): boolean => question.id != id,
+    );
+    return qIsGone;
 }
 
 /***
@@ -44,7 +64,8 @@ export function removeQuestion(questions: Question[], id: number): Question[] {
  * Do not modify the input array.
  */
 export function getNames(questions: Question[]): string[] {
-    return [];
+    let names = questions.map((question: Question): string => question.name);
+    return names;
 }
 
 /**
@@ -53,7 +74,15 @@ export function getNames(questions: Question[]): string[] {
  * making the `text` an empty string, and using false for both `submitted` and `correct`.
  */
 export function makeAnswers(questions: Question[]): Answer[] {
-    return [];
+    let answers = questions.map(
+        (question: Question): Answer => ({
+            questionId: question.id,
+            text: "",
+            submitted: false,
+            correct: false,
+        }),
+    );
+    return answers;
 }
 
 /***
@@ -62,7 +91,11 @@ export function makeAnswers(questions: Question[]): Answer[] {
  * Hint: as usual, do not modify the input questions array
  */
 export function publishAll(questions: Question[]): Question[] {
-    return [];
+    let nowPublishedQs = questions.map(
+        (question): Question =>
+            question.published ? question : { ...question, published: true },
+    );
+    return nowPublishedQs;
 }
 
 /***
@@ -75,24 +108,32 @@ export function addNewQuestion(
     questions: Question[],
     id: number,
     name: string,
-    type: QuestionType
+    type: QuestionType,
 ): Question[] {
-    return [];
+    let newQuestion = makeBlankQuestion(id, name, type);
+    let addedQ = [...questions, newQuestion];
+    return addedQ;
 }
 
 /***
  * Consumes an array of Questions and produces a new array of Questions, where all
  * the Questions are the same EXCEPT for the one with the given `targetId`. That
  * Question should be the same EXCEPT that its name should now be `newName`.
- * Hint: as usual, do not modify the input questions array, 
+ * Hint: as usual, do not modify the input questions array,
  *       to make a new copy of a question with some changes, use the ... operator
  */
 export function renameQuestionById(
     questions: Question[],
     targetId: number,
-    newName: string
+    newName: string,
 ): Question[] {
-    return [];
+    let postRename = questions.map(
+        (question: Question): Question =>
+            question.id === targetId ?
+                { ...question, name: newName }
+            :   question,
+    );
+    return postRename;
 }
 
 /**
@@ -104,14 +145,30 @@ export function renameQuestionById(
  *
  * Remember, if a function starts getting too complicated, think about how a helper function
  * can make it simpler! Break down complicated tasks into little pieces.
- * 
+ *
  * Hint: you need to use the ... operator for both the question and the options array
  */
 export function editOption(
     questions: Question[],
     targetId: number,
     targetOptionIndex: number,
-    newOption: string
+    newOption: string,
 ): Question[] {
-    return [];
+    let postEdit = questions.map(
+        (question: Question): Question =>
+            question.id === targetId ?
+                targetOptionIndex === -1 ?
+                    { ...question, options: [...question.options, newOption] }
+                :   {
+                        ...question,
+                        options: question.options.map(
+                            (option, index): string =>
+                                index === targetOptionIndex ? newOption : (
+                                    option
+                                ),
+                        ),
+                    }
+            :   question,
+    );
+    return postEdit;
 }

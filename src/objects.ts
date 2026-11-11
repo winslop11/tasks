@@ -10,7 +10,7 @@ export function makeBlankQuestion(
     name: string,
     type: QuestionType,
 ): Question {
-    let blankQuestion = {
+    let blankQuestion: Question = {
         id: id,
         name: name,
         type: type,
