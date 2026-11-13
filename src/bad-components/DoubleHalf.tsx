@@ -35,12 +35,11 @@ function Halver({ setDhValue, dhValue }: double_half_props): React.JSX.Element {
 
 export function DoubleHalf(): React.JSX.Element {
     const [dhValue, setDhValue] = useState<number>(10);
-
     return (
         <div>
-            <h3>Double Half</h3>
+            <h3> Double Half</h3>
             <div>
-                The current value is: <span>{dhValue}</span>
+                The current value is : <span>{dhValue} </span>{" "}
             </div>
             <Doubler setDhValue={setDhValue} dhValue={dhValue}></Doubler>
             <Halver setDhValue={setDhValue} dhValue={dhValue}></Halver>
